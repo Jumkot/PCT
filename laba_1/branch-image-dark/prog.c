@@ -27,7 +27,13 @@ int image_is_dark(uint8_t *img, int width, int height)
 
 int image_is_dark_opt(uint8_t *img, int width, int height)
 {
-    // TODO
+    int count = 0;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            count += (img[i * width + j] >> 7); // shr al, 7; деление на 27
+        }
+    }
+    return count < width * height / 2;
 }
 
 int main()
@@ -42,7 +48,7 @@ int main()
 
     double t = wtime();
     int dark = image_is_dark(image, W, H);
-    //int dark = image_is_dark_opt(image, W, H);
+    // int dark = image_is_dark_opt(image, W, H);
     t = wtime() - t;
 
     printf("Time %.6f, dark %d\n", t, dark);
