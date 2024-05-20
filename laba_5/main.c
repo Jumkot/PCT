@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define THRESHOLD 1000
+#define THRESHOLD 10000
 #define SIZE 100000
 
 void swap(int* a, int* b)
@@ -111,7 +111,7 @@ double run_serial(int *array, int size)
 
 int main()
 {
-    char names[][10]   = { "data1.dat", "data2.dat", "data3.dat", "data4.dat", "data5.dat", "data6.dat" };
+    char names[][10]   = { "data1.dat", "data2.dat", "data3.dat", "data4.dat", "data5.dat" };
 
     for (int j = 1; j <= 5; j++)
     {
@@ -143,34 +143,6 @@ int main()
 
         free(array_serial);
     }
-
-    int *array_threshold = malloc(THRESHOLD * sizeof(int));
-    for (int i = 0; i < THRESHOLD; i++)
-    {
-        array_threshold[i] = rand() % THRESHOLD + 1;
-    }
-
-    FILE* file;
-    char filename[10];
-    strcpy(filename, names[5]);
-    file = fopen(filename, "w");
-
-    double t_serial = run_serial(array_threshold, THRESHOLD);
-
-    for (int i = 2; i <= 8; i += 2)
-    {
-        int *array_threshold_parallel = malloc(THRESHOLD * sizeof(int));
-        for (int k = 0; k < THRESHOLD; k++)
-        {
-            array_threshold_parallel[k] = rand() % THRESHOLD + 1;
-        }
-        fprintf(file, "%d    %f\n", i,  t_serial / run_parallel(array_threshold_parallel, THRESHOLD, i));
-        free(array_threshold_parallel);
-    }
-
-    fclose(file);
-
-    free(array_threshold);
 
     return 0;
 }

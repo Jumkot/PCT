@@ -23,7 +23,6 @@ set ylabel "Speedup" font 'Calibri,16'
 set format y "%.12g"
 
 plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
-     'data6.dat' using 1:2 title "N = THRESHOLD" with linespoints ls 7,\
      'data1.dat' using 1:2 title "N = 100000" with linespoints ls 2,\
      'data2.dat' using 1:2 title "N = 200000" with linespoints ls 3,\
      'data3.dat' using 1:2 title "N = 300000" with linespoints ls 4,\
