@@ -1,5 +1,10 @@
 #!/bin/bash
 
-#SBATCH --nodes=2 --ntasks-per-node=8
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=8
 #SBATCH --job-name=J_ring
-mpiexec ./ring
+#SBATCH --output=output_ring_file.txt
+#SBATCH --error=error_ring_file.txt
+
+module load mpi
+srun ./ring
