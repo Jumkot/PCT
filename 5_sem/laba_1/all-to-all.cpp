@@ -12,8 +12,8 @@ int main(int argc, char** argv)
 
     int message_size = 1024;
 
-    std::vector<char> send_buffer(msg_size * size, rank);
-    std::vector<char> recv_buffer(msg_size * size);
+    std::vector<char> send_buffer(message_size * size, rank);
+    std::vector<char> recv_buffer(message_size * size);
 
     std::vector<MPI_Request> requests(2 * size);
 
