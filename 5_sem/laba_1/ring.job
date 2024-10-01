@@ -1,6 +1,5 @@
 #!/bin/bash
 
-SBATCH --nodes=2 --ntasks-per-node=8
-#SBATCH --nodes=4 --ntasks-per-node=4
-SBATCH --job-name=J_ring
-mpiexec ring
+#SBATCH --nodes=2 --ntasks-per-node=8
+#SBATCH --job-name=J_ring
+mpiexec ./ring

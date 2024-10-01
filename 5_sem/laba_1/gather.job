@@ -1,5 +1,5 @@
 #!/bin/bash
 
-SBATCH --nodes=4 --ntasks-per-node=8
-SBATCH --job-name=J_gather
-mpiexec gather
+#SBATCH --nodes=4 --ntasks-per-node=8
+#SBATCH --job-name=J_gather
+mpiexec ./gather
