@@ -31,8 +31,8 @@ run_all-to-all_job:
 	
 jobs_cat:
 	cat ring_file.txt
+	cat broadcast_file.txt
 	cat gather_file.txt
-	cat ./broadcast
 	cat all-to-all_file.txt
 
 

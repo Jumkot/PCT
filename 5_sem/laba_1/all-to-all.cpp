@@ -4,6 +4,7 @@
 
 int main(int argc, char** argv)
 {
+    double common_time = 0;
     MPI_Init(&argc, &argv);
 
     int rank, size;
@@ -42,9 +43,11 @@ int main(int argc, char** argv)
     MPI_Waitall(2 * size, requests.data(), MPI_STATUSES_IGNORE);
 
     double end = MPI_Wtime();
-    std::cout << "Rank: " << rank << ", Message size: " << message_size
-              << " bytes, Time: " << end - start << " seconds\n";
+    common_time += end - start;
+    std::cout << "Rank: " << rank << ", Time: " << end - start << " seconds\n";
 
     MPI_Finalize();
+    std::cout << "Common time: " << common_time << "\n";
+
     return 0;
 }
