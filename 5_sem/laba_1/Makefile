@@ -1,5 +1,5 @@
 CXX = mpicxx
-CXXFLAGS = -Wall -Wextra -Werror -std=c++20
+CXXFLAGS = -Wall -Wextra -Werror
 
 SOURCES = $(wildcard *.cpp)
 TARGETS = $(patsubst %.cpp, %, $(SOURCES))

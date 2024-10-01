@@ -12,8 +12,8 @@ int main(int argc, char** argv)
 
     int message_size = 1024;
 
-    std::vector<char> send_buffer(msg_size * size, rank);
-    std::vector<char> recv_buffer(msg_size * size);
+    std::vector<char> send_buffer(message_size * size, rank);
+    std::vector<char> recv_buffer(message_size * size);
 
     std::vector<MPI_Request> requests(2 * size);
 
@@ -42,11 +42,8 @@ int main(int argc, char** argv)
     MPI_Waitall(2 * size, requests.data(), MPI_STATUSES_IGNORE);
 
     double end = MPI_Wtime();
-    и
-
-                    std::cout
-            << "Rank: " << rank << ", Message size: " << message_size
-            << " bytes, Time: " << end - start << " seconds\n";
+    std::cout << "Rank: " << rank << ", Message size: " << message_size
+              << " bytes, Time: " << end - start << " seconds\n";
 
     MPI_Finalize();
     return 0;
