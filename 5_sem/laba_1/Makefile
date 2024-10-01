@@ -14,11 +14,11 @@ clean:
 	rm -f *.txt
 
 run_ring_job_1:
-	sed -i 's/\r//' ring.job
+	sed -i 's/\r//' ring_1.job
 	sbatch ./ring_1.job
 
 run_ring_job_2:
-	sed -i 's/\r//' ring.job
+	sed -i 's/\r//' ring_2.job
 	sbatch ./ring_2.job
 
 run_broadcast_job:
