@@ -2,6 +2,6 @@
 
 #SBATCH --nodes=2 --ntasks-per-node=8
 #SBATCH --job-name=J_ring
-#SBATCH --output=ring_file.txt
+#SBATCH --output=ring_1_file.txt
 
 mpiexec ./ring

@@ -13,9 +13,13 @@ clean:
 	rm -f $(TARGETS)
 	rm -f *.txt
 
-run_ring_job:
+run_ring_job_1:
 	sed -i 's/\r//' ring.job
-	sbatch ./ring.job
+	sbatch ./ring_1.job
+
+run_ring_job_2:
+	sed -i 's/\r//' ring.job
+	sbatch ./ring_2.job
 
 run_broadcast_job:
 	sed -i 's/\r//' broadcast.job
@@ -30,7 +34,8 @@ run_all-to-all_job:
 	sbatch ./all-to-all.job
 	
 jobs_cat:
-	cat ring_file.txt
+	cat ring_1_file.txt
+	cat ring_2_file.txt
 	cat broadcast_file.txt
 	cat gather_file.txt
 	cat all-to-all_file.txt

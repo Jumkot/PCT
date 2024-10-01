@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=4
+#SBATCH --job-name=J_ring
+#SBATCH --output=ring_2_file.txt
+
+mpiexec ./ring

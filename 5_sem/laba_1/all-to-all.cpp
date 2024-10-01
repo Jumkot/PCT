@@ -4,7 +4,6 @@
 
 int main(int argc, char** argv)
 {
-    double common_time = 0;
     MPI_Init(&argc, &argv);
 
     int rank, size;
@@ -13,8 +12,8 @@ int main(int argc, char** argv)
 
     int message_size = 1024;
 
-    std::vector<char> send_buffer(message_size * size, rank);
-    std::vector<char> recv_buffer(message_size * size);
+    std::vector<char> send_buffer(msg_size * size, rank);
+    std::vector<char> recv_buffer(msg_size * size);
 
     std::vector<MPI_Request> requests(2 * size);
 
@@ -43,11 +42,8 @@ int main(int argc, char** argv)
     MPI_Waitall(2 * size, requests.data(), MPI_STATUSES_IGNORE);
 
     double end = MPI_Wtime();
-    common_time += end - start;
     std::cout << "Rank: " << rank << ", Time: " << end - start << " seconds\n";
 
     MPI_Finalize();
-    std::cout << "Common time: " << common_time << "\n";
-
     return 0;
 }
