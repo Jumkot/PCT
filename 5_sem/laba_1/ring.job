@@ -4,5 +4,4 @@
 #SBATCH --job-name=J_ring
 #SBATCH --output=ring_file.txt
 
-module load mpi
-srun ./ring
+mpiexec ./ring
