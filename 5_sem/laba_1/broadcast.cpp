@@ -10,8 +10,6 @@ int main(int argc, char** argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    std::vector<int> msg_sizes = {1024, 1024 * 1024};
-
     for (int message_size = 1024; message_size <= 1024 * 1024;
          message_size *= 1024) {
         std::vector<char> buffer(message_size, rank);
