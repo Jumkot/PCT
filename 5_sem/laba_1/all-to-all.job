@@ -2,4 +2,6 @@
 
 #SBATCH --nodes=4 --ntasks-per-node=8
 #SBATCH --job-name=J_all-to-all
+#SBATCH --output=all-to-all_file.txt
+
 mpiexec ./all-to-all
