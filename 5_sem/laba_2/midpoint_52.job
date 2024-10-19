@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=13
+#SBATCH --job-name=J_midpoint_52
+#SBATCH --output=midpoint_52.txt
+
+mpiexec ./midpoint
