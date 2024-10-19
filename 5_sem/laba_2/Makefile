@@ -1,5 +1,4 @@
 CXX = mpicxx
-CXXFLAGS = -Wall -Wextra -Werror
 
 SOURCES = $(wildcard *.cpp)
 TARGETS = $(patsubst %.cpp, %, $(SOURCES))
@@ -7,53 +6,56 @@ TARGETS = $(patsubst %.cpp, %, $(SOURCES))
 all: $(TARGETS)
 
 %: %.cpp
-	$(CXX) $(CXXFLAGS) -o $@ $<
+	$(CXX) -o $@ $<
 
 clean:
 	rm -f $(TARGETS)
 	rm -f *.txt
+	rm -f *.dat
 
 sed_all:
-	sed -i 's/\r//' midpoint_4.job
-	sed -i 's/\r//' midpoint_16.job
-	sed -i 's/\r//' midpoint_28.job
-	sed -i 's/\r//' midpoint_40.job
-	sed -i 's/\r//' midpoint_52.job
-	sed -i 's/\r//' midpoint_64.job
-	sed -i 's/\r//' monte-carlo_4.job
-	sed -i 's/\r//' monte-carlo_16.job
-	sed -i 's/\r//' monte-carlo_28.job
-	sed -i 's/\r//' monte-carlo_40.job
-	sed -i 's/\r//' monte-carlo_52.job
-	sed -i 's/\r//' monte-carlo_64.job
+	sed -i 's/\r//' job/midpoint_4.job
+	sed -i 's/\r//' job/midpoint_8.job
+	sed -i 's/\r//' job/midpoint_16.job
+	sed -i 's/\r//' job/midpoint_20.job
+	sed -i 's/\r//' job/midpoint_28.job
+	sed -i 's/\r//' job/midpoint_32.job
+	sed -i 's/\r//' job/montecarlo7_4.job
+	sed -i 's/\r//' job/montecarlo7_8.job
+	sed -i 's/\r//' job/montecarlo7_16.job
+	sed -i 's/\r//' job/montecarlo7_20.job
+	sed -i 's/\r//' job/montecarlo7_28.job
+	sed -i 's/\r//' job/montecarlo7_32.job
+	sed -i 's/\r//' job/montecarlo8_4.job
+	sed -i 's/\r//' job/montecarlo8_8.job
+	sed -i 's/\r//' job/montecarlo8_16.job
+	sed -i 's/\r//' job/montecarlo8_20.job
+	sed -i 's/\r//' job/montecarlo8_28.job
+	sed -i 's/\r//' job/montecarlo8_32.job
 
 sbatch_all:
-	sbatch ./midpoint_4.job
-	sbatch ./midpoint_16.job
-	sbatch ./midpoint_28.job
-	sbatch ./midpoint_40.job
-	sbatch ./midpoint_52.job
-	sbatch ./midpoint_64.job
-	sbatch ./monte-carlo_4.job
-	sbatch ./monte-carlo_16.job
-	sbatch ./monte-carlo_28.job
-	sbatch ./monte-carlo_40.job
-	sbatch ./monte-carlo_52.job
-	sbatch ./monte-carlo_64.job
-	
-cat_all:
-	cat midpoint_4.txt
-	cat midpoint_16.txt
-	cat midpoint_28.txt
-	cat midpoint_40.txt
-	cat midpoint_52.txt
-	cat midpoint_64.txt
-	cat monte-carlo_4.txt
-	cat monte-carlo_16.txt
-	cat monte-carlo_28.txt
-	cat monte-carlo_40.txt
-	cat monte-carlo_52.txt
-	cat monte-carlo_64.txt
+	sbatch job/midpoint_4.job
+	sbatch job/midpoint_8.job
+	sbatch job/midpoint_16.job
+	sbatch job/midpoint_20.job
+	sbatch job/midpoint_28.job
+	sbatch job/midpoint_32.job
+	sbatch job/montecarlo7_4.job
+	sbatch job/montecarlo7_8.job
+	sbatch job/montecarlo7_16.job
+	sbatch job/montecarlo7_20.job
+	sbatch job/montecarlo7_28.job
+	sbatch job/montecarlo7_32.job
+	sbatch job/montecarlo8_4.job
+	sbatch job/montecarlo8_8.job
+	sbatch job/montecarlo8_16.job
+	sbatch job/montecarlo8_20.job
+	sbatch job/montecarlo8_28.job
+	sbatch job/montecarlo8_32.job
 
+out:
+	g++ -o output output.cpp
+	./output
+	gnuplot graph.gp
 
-.PHONY: all clean sed_all sbatch_all сat_all
+.PHONY: all clean sed_all sbatch_all

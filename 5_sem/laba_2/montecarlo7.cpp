@@ -53,6 +53,8 @@ int main(int argc, char** argv)
         serial_time = MPI_Wtime() - serial_time;
     }
 
+    MPI_Barrier(MPI_COMM_WORLD);
+
     srand(rank); // Уникальный seed для каждого процесса
     int in = 0;
     double s = 0;

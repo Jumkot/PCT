@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=8
+#SBATCH --job-name=J_montecarlo8_32
+#SBATCH --output=montecarlo8_32.txt
+
+mpiexec ./montecarlo8

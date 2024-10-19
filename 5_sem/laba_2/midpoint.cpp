@@ -49,6 +49,8 @@ int main(int argc, char** argv)
         serial_time = MPI_Wtime() - serial_time;
     }
 
+    MPI_Barrier(MPI_COMM_WORLD);
+
     int n = n0, k;
     double sq[2], delta = 1;
 

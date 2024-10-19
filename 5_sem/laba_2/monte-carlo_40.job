@@ -1,7 +1,0 @@
-#!/bin/bash
-
-#SBATCH --nodes=4 --ntasks-per-node=10
-#SBATCH --job-name=J_monte-carlo_40
-#SBATCH --output=monte-carlo_40.txt
-
-mpiexec ./monte-carlo
