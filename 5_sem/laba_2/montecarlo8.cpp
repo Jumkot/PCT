@@ -12,7 +12,7 @@ double get_rand()
 
 double func(double x, double y)
 {
-    return std::pow(std::exp(x + y), 6);
+    return std::pow(std::exp(x + y), 2);
 }
 
 // Последовательная версия программы
@@ -25,10 +25,8 @@ void integral_serial(int n)
         double x = get_rand();           // x in [0, 1]
         double y = get_rand() * (1 - x); // y in [0, 1 - x]
 
-        double f_value = func(x, y);
-
         in++;
-        s += f_value;
+        s += func(x, y);
     }
 
     double v = in / n;
@@ -79,7 +77,8 @@ int main(int argc, char** argv)
     double parallel_time = MPI_Wtime() - parallel_start_time;
 
     if (rank == 0) {
-        double res = global_sum / n;
+        double v = static_cast<double>(global_in) / n;
+        double res = v * global_sum / global_in;
         std::cout << commsize << "    " << serial_time / parallel_time << "\n";
     }
 
