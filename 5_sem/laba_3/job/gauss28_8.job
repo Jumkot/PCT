@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=2
+#SBATCH --job-name=J_g28_8
+#SBATCH --output=gauss28_8.txt
+
+mpiexec ./gauss28
