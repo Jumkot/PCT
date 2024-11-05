@@ -5,7 +5,7 @@
 #include <vector>
 
 double serial_time = 0.0;
-int n = 28000;
+int n = 5000;
 
 int get_chunk(int commsize, int rank)
 {
@@ -24,59 +24,16 @@ int get_chunk(int commsize, int rank)
     return chunk;
 }
 
-// Последовательная версия программы
-void gauss_serial()
-{
-    std::vector<std::vector<double>> a(n, std::vector<double>(n + 1));
-    std::vector<double> x(n, 0.0);
-
-    // Инициализация матрицы и столбца свободных членов
-    for (int i = 0; i < n; i++) {
-        srand(i * (n + 1));
-        for (int j = 0; j < n; j++) {
-            a[i][j] = rand() % 100 + 1;
-        }
-        // Последний столбец (n-й) — свободные члены
-        a[i][n] = rand() % 100 + 1;
-    }
-
-    // Прямой ход (исключение переменных) — сложность O(n^3)
-    for (int k = 0; k < n - 1; k++) {
-        double pivot = a[k][k];
-        for (int i = k + 1; i < n; i++) {
-            double lik = a[i][k] / pivot;
-            for (int j = k; j < n + 1; j++) {
-                a[i][j] -= lik * a[k][j];
-            }
-        }
-    }
-
-    // Обратный ход (вычисление переменных) — сложность O(n^2)
-    for (int k = n - 1; k >= 0; k--) {
-        x[k] = a[k][n];
-        for (int i = k + 1; i < n; i++) {
-            x[k] -= a[k][i] * x[i];
-        }
-        x[k] /= a[k][k];
-    }
-}
-
 int main(int argc, char* argv[])
 {
     std::cout.setf(std::ios::fixed);
     
     int rank, commsize;
     MPI_Init(&argc, &argv);
+
+    double parallel_start_time = MPI_Wtime();
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
-
-    if (rank == 0) {
-        // Запуск последовательной версии и замер времени выполнения
-        serial_time = MPI_Wtime();
-        gauss_serial();
-        serial_time = MPI_Wtime() - serial_time;
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
     
     int nrows = get_chunk(commsize, rank);
     
@@ -85,8 +42,6 @@ int main(int argc, char* argv[])
     // Матрица дополнена столбцом для вектора b
     std::vector<double> x(n, 0.0);
     std::vector<double> tmp(n + 1);
-
-    double parallel_start_time = MPI_Wtime();
 
     // Инициализация как в последовательной версии
     for (int i = 0; i < nrows; i++) {
@@ -104,7 +59,11 @@ int main(int argc, char* argv[])
     int row = 0;
     for (int i = 0; i < n - 1; i++) {
         // Исключаем x_i
-        if (i == rows[row]) {
+        if (row < nrows && i == rows[row]) {
+            if (a[row].size() < n + 1) {
+                std::cerr << "Rank " << rank << ": Invalid row size at row " << row << std::endl;
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
             // Рассылаем строку i, находящуюся в памяти текущего процесса
             MPI_Bcast(a[row].data(), n + 1, MPI_DOUBLE, rank, MPI_COMM_WORLD);
             tmp = a[row];
@@ -113,18 +72,20 @@ int main(int argc, char* argv[])
             MPI_Bcast(tmp.data(), n + 1, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
         }
         // Вычитаем принятую строку из уравнений, хранящихся в текущем процессе
-        for (int j = row; j < nrows; j++) {
-            double scaling = a[j][i] / tmp[i];
-            for (int k = i; k < n + 1; k++)
-            {
-               a[j][k] -= scaling * tmp[k];
+        if (row < nrows) {
+            for (int j = row; j < nrows; j++) {
+                double scaling = a[j][i] / tmp[i];
+                for (int k = i; k < n + 1; k++)
+                {
+                    a[j][k] -= scaling * tmp[k];
+                }
             }
         }
     }
 
     row = 0;
     for (int i = 0; i < n; i++) {
-        if (i == rows[row]) {
+        if (row < nrows && i == rows[row]) {
             x[i] = a[row][n];
             row++;
         }
@@ -144,22 +105,23 @@ int main(int argc, char* argv[])
         } else {
             MPI_Bcast(&x[i], 1, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
         }
-
-        for (int j = 0; j <= row; j++) // Корректировка локальных x_i
-        {
-            x[rows[j]] -= a[j][i] * x[i];
+        if (row >= 0) {
+            for (int j = 0; j <= row; j++) // Корректировка локальных x_i
+            {
+                x[rows[j]] -= a[j][i] * x[i];
+            }
         }
     }
     if (rank == 0)
     {
         x[0] /= a[row][0]; // Корректировка x_0
     }
-    MPI_Bcast(x.data(), n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&x[0], 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     // Все процессы содержат корректный вектор x[n] решений
 
     double parallel_time = MPI_Wtime() - parallel_start_time;
     if (rank == 0) {
-        std::cout << commsize << "    " << serial_time / parallel_time << "\n";
+        std::cout << commsize << "    " << parallel_time << "\n";
     }
 
     MPI_Finalize();

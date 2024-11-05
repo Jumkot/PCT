@@ -2,6 +2,6 @@
 
 #SBATCH --nodes=4 --ntasks-per-node=4
 #SBATCH --job-name=J_g45_16
-#SBATCH --output=gauss45_16.txt
+#SBATCH --output=results/gauss45_16.txt
 
 mpiexec ./gauss45

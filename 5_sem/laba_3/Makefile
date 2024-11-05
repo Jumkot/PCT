@@ -10,8 +10,6 @@ all: $(TARGETS)
 
 clean:
 	rm -f $(TARGETS)
-	rm -f *.txt
-	rm -f *.dat
 
 sed_all:
 	sed -i 's/\r//' job/gauss28_4.job

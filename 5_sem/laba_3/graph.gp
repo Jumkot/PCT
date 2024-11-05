@@ -1,5 +1,5 @@
 set terminal pdf color enhanced font 'Calibri,16' size 14cm,10cm
-set output 'graph.pdf'
+set output 'results/graph.pdf'
 set key inside left top font 'Calibri,16'
 set colorsequence podo
 set style line 1 lc rgb 'blue' lw 1 pt 5 ps 0.5
@@ -23,9 +23,8 @@ set ylabel "Speedup" font 'Calibri,16'
 set format y "%.12g"
 
 plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
-     'midpoints.dat' using 1:2 title "MidPoint (Runge)" with linespoints ls 2,\
-     'montecarlos7.dat' using 1:2 title "Monte-Carlo (10^7)" with linespoints ls 3,\
-     'montecarlos8.dat' using 1:2 title "Monte-Carlo (10^8)" with linespoints ls 4
+     'gauss28.dat' using 1:2 title "Gaussian method (28 000)" with linespoints ls 3,\
+     'gauss45.dat' using 1:2 title "Gaussian method (45 000)" with linespoints ls 4
      
 
 
