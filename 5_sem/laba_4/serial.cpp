@@ -64,9 +64,7 @@ int main(int argc, char *argv[]) {
 
     ttotal = MPI_Wtime() - ttotal;
 
-    if (MPI::COMM_WORLD.Get_rank() == 0) {
-        std::cout << ttotal << '\n';
-    }
+    std::cout << ttotal << "\n";
 
     MPI_Finalize();
     return 0;

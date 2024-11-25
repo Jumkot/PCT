@@ -23,8 +23,8 @@ set ylabel "Speedup" font 'Calibri,16'
 set format y "%.12g"
 
 plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
-     'laplace3.dat' using 1:2 title "Laplace equation (1000)" with linespoints ls 3,\
-     'laplace4.dat' using 1:2 title "Laplace equation (10000)" with linespoints ls 4
+     'results/laplace3.dat' using 1:2 title "Laplace equation (1000)" with linespoints ls 3,\
+     'results/laplace4.dat' using 1:2 title "Laplace equation (10000)" with linespoints ls 4
      
 
 

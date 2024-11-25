@@ -30,6 +30,8 @@ sbatch_all:
 	sbatch job/gauss45_8.job
 	sbatch job/gauss45_16.job
 	sbatch job/gauss45_32.job
+	sbatch job/serial28.job
+	sbatch job/serial32.job
 
 out:
 	g++ -o output output.cpp

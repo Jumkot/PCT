@@ -26,6 +26,8 @@ sbatch_all:
 	sbatch job/laplace4_8.job
 	sbatch job/laplace4_16.job
 	sbatch job/laplace4_32.job
+	sbatch job/serial3.job
+	sbatch job/serial4.job
 
 out:
 	g++ -o output output.cpp

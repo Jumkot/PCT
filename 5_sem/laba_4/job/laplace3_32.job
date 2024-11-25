@@ -2,6 +2,6 @@
 
 #SBATCH --nodes=4 --ntasks-per-node=8
 #SBATCH --job-name=J_l3_32
-#SBATCH --output=results/laplace3.txt
+#SBATCH --output=results/laplace3_32.txt
 
 mpiexec ./laplace 1000
