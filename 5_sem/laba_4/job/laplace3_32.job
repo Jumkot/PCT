@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=8
+#SBATCH --job-name=J_l3_32
+#SBATCH --output=results/laplace3.txt
+
+mpiexec ./laplace 1000

@@ -5,7 +5,7 @@
 #include <vector>
 
 double serial_time = 0.0;
-int n = 10000;
+int n = 45000;
 
 int get_chunk(int commsize, int rank)
 {
@@ -59,11 +59,7 @@ int main(int argc, char* argv[])
     int row = 0;
     for (int i = 0; i < n - 1; i++) {
         // Исключаем x_i
-        if (row < nrows && i == rows[row]) {
-            if (a[row].size() < n + 1) {
-                std::cerr << "Rank " << rank << ": Invalid row size at row " << row << std::endl;
-                MPI_Abort(MPI_COMM_WORLD, 1);
-            }
+        if (i == rows[row]) {
             // Рассылаем строку i, находящуюся в памяти текущего процесса
             MPI_Bcast(a[row].data(), n + 1, MPI_DOUBLE, rank, MPI_COMM_WORLD);
             tmp = a[row];
@@ -105,11 +101,9 @@ int main(int argc, char* argv[])
         } else {
             MPI_Bcast(&x[i], 1, MPI_DOUBLE, i % commsize, MPI_COMM_WORLD);
         }
-        if (row >= 0) {
-            for (int j = 0; j <= row; j++) // Корректировка локальных x_i
-            {
-                x[rows[j]] -= a[j][i] * x[i];
-            }
+        for (int j = 0; j <= row; j++) // Корректировка локальных x_i
+        {
+            x[rows[j]] -= a[j][i] * x[i];
         }
     }
     if (rank == 0)
