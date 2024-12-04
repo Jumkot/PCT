@@ -2,6 +2,6 @@
 
 #SBATCH --nodes=4 --ntasks-per-node=5
 #SBATCH --job-name=J_i1_20
-#SBATCH --output=results/inverse1_20.txt
+#SBATCH --output=results/1000/inverse1_20.txt
 
 mpiexec ./inverse 1000

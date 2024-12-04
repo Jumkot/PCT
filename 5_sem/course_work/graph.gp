@@ -18,14 +18,14 @@ set style line 13 lt 13 lw 1 pt 3 ps 0.5
 set style line 14 lt 14 lw 1 pt 5 ps 0.5
 set style line 15 lt 15 lw 1 pt 7 ps 0.5
 set style line 16 lt 16 lw 1 pt 9 ps 0.5
-set xlabel "Threads" font 'Calibri,16'
+set xlabel "Process" font 'Calibri,16'
 set ylabel "Speedup" font 'Calibri,16'
 set format y "%.12g"
 
 plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
      'results/inverse1.dat' using 1:2 title "Gauss-Jordan (1000)" with linespoints ls 3,\
      'results/inverse2.dat' using 1:2 title "Gauss-Jordan (2500)" with linespoints ls 4,\
-     'results/inverse4.dat' using 1:2 title "Gauss-Jordan (400)" with linespoints ls 5
+     'results/inverse4.dat' using 1:2 title "Gauss-Jordan (4000)" with linespoints ls 5
      
 
 
