@@ -23,8 +23,9 @@ set ylabel "Speedup" font 'Calibri,16'
 set format y "%.12g"
 
 plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
-     'results/laplace3.dat' using 1:2 title "Laplace equation (1000)" with linespoints ls 3,\
-     'results/laplace4.dat' using 1:2 title "Laplace equation (10000)" with linespoints ls 4
+     'results/inverse1.dat' using 1:2 title "Gauss-Jordan (1000)" with linespoints ls 3,\
+     'results/inverse2.dat' using 1:2 title "Gauss-Jordan (2500)" with linespoints ls 4,\
+     'results/inverse4.dat' using 1:2 title "Gauss-Jordan (400)" with linespoints ls 5
      
 
 

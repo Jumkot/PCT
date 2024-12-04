@@ -1,29 +1,31 @@
-#include <mpi.h>
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <mpi.h>
 
 int rank, commsize, lb, ub, nrows;
 int n;
 
 // Вспомогательный класс для поиска максимума
-class Data
-{
+class Data {
 public:
     double value;
     int index;
 
-    Data(double value_, int index_): value(value_), index(index_) {}
+    Data(double value_, int index_) : value(value_), index(index_)
+    {
+    }
     Data()
     {
         value = 0.0;
         index = 0;
-    }    
+    }
 };
 
 // Вычисляет диапазон строк для текущего процесса
-void get_chunk(int *u, int *l) {
+void get_chunk(int* u, int* l)
+{
     int rows = n / commsize; // Число строк на процесс
     int mod = n % commsize;  // Оставшиеся строки
     if (rank < mod) {
@@ -39,7 +41,8 @@ void get_chunk(int *u, int *l) {
 }
 
 // Определяет, какой процесс обрабатывает строку с данным индексом
-int get_proc(int index) {
+int get_proc(int index)
+{
     int rows = n / commsize; // Число строк на процесс
     int mod = n % commsize;  // Оставшиеся строки
     int threshold = mod * (rows + 1); // Порог между процессами
@@ -51,7 +54,8 @@ int get_proc(int index) {
 }
 
 // Создаёт матрицу заданного типа (диагональная или стартовая)
-void create_matrix(double* matrix, bool base) {
+void create_matrix(double* matrix, bool base)
+{
     for (int i = 0; i < nrows; ++i) {
         for (int j = 0; j < n; ++j) {
             if (base) {
@@ -67,7 +71,8 @@ void create_matrix(double* matrix, bool base) {
 
 // Выполняет шаг инверсии методом Гаусса-Жордана
 // Все операции дублируются на матрице inverse
-bool inverse_matrix(double* start, double* inverse, int current_col) {
+bool inverse_matrix(double* start, double* inverse, int current_col)
+{
     double local_max = 0.0;
     int local_index = -1;
 
@@ -87,14 +92,15 @@ bool inverse_matrix(double* start, double* inverse, int current_col) {
     Data local(local_max, local_index);
 
     // Сравнение локальных максимумов для поиска глобального
-    MPI_Allreduce(&local, &global, 1, MPI_DOUBLE_INT, MPI_MAXLOC, MPI_COMM_WORLD);
+    MPI_Allreduce(
+            &local, &global, 1, MPI_DOUBLE_INT, MPI_MAXLOC, MPI_COMM_WORLD);
 
     if (global.value == 0.0) {
         return false; // Матрица необратима
     }
 
     int diagonal = get_proc(current_col); // Процесс с диагональным элементом
-    int main = get_proc(global.index);    // Процесс с максимальным элементом
+    int main = get_proc(global.index); // Процесс с максимальным элементом
 
     double* local_buf = new double[4 * n];
     double* reduce_buf = new double[4 * n];
@@ -103,7 +109,7 @@ bool inverse_matrix(double* start, double* inverse, int current_col) {
 
     // Сохранение строки с диагональным элементом
     if (rank == diagonal) {
-        int index = current_col - lb; 
+        int index = current_col - lb;
         for (int i = 0; i < n; i++) {
             local_buf[n + i] = start[index * n + i];
             local_buf[3 * n + i] = inverse[index * n + i];
@@ -120,11 +126,12 @@ bool inverse_matrix(double* start, double* inverse, int current_col) {
     }
 
     // Сбор строк с макс. эл-тами и диаг. строк со всех процессов
-    MPI_Allreduce(local_buf, reduce_buf, 4 * n, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(
+            local_buf, reduce_buf, 4 * n, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
     double c = reduce_buf[current_col]; // Значение диагонального элемента
     for (int i = 0; i < n; i++) {
-        reduce_buf[i] /= c;             // Нормализация строки
+        reduce_buf[i] /= c; // Нормализация строки
         reduce_buf[2 * n + i] /= c;
     }
 
@@ -163,16 +170,21 @@ bool inverse_matrix(double* start, double* inverse, int current_col) {
     return true;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv)
+{
     std::cout.setf(std::ios::fixed);
-    
+
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &commsize);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    if (argc > 1) {
-        n = std::atoi(argv[1]);
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <n>\n";
+        MPI_Finalize();
+        return EXIT_FAILURE;
     }
+
+    n = std::atoi(argv[1]);
 
     double time = -MPI_Wtime();
 
@@ -208,14 +220,21 @@ int main(int argc, char **argv) {
     for (int i = 0; i < commsize; ++i) {
         int l, u;
         get_chunk(&u, &l);
-        elem_per_process[i] = (u - l + 1) * n; // Количество элементов для каждого процесса
-        displace_per_process[i] = l * n;              // Смещение в общем массиве
+        elem_per_process[i]
+                = (u - l + 1) * n; // Количество элементов для каждого процесса
+        displace_per_process[i] = l * n; // Смещение в общем массиве
     }
 
     MPI_Gatherv(
-        inverse, nrows * n, MPI_DOUBLE,        // Данные текущего процесса
-        full_inverse, elem_per_process, displace_per_process,     // Данные всех процессов
-        MPI_DOUBLE, 0, MPI_COMM_WORLD         // Тип и root
+            inverse,
+            nrows * n,
+            MPI_DOUBLE, // Данные текущего процесса
+            full_inverse,
+            elem_per_process,
+            displace_per_process, // Данные всех процессов
+            MPI_DOUBLE,
+            0,
+            MPI_COMM_WORLD // Тип и root
     );
 
     delete[] elem_per_process;
@@ -234,4 +253,3 @@ int main(int argc, char **argv) {
     MPI_Finalize();
     return 0;
 }
-

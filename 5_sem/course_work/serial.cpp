@@ -1,44 +1,44 @@
-#include <iostream>
-#include <vector>
-#include <mpi.h>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <mpi.h>
 
-// Определяем тип Matrix как двумерный вектор
-typedef std::vector<std::vector<double>> Matrix;
+int n;
 
-// Функция для инверсии матрицы
-bool inverse_matrix(Matrix &matrix) {
-    int n = matrix.size();
-    Matrix temp(n, std::vector<double>(2 * n, 0.0));
+// Функция для обращения матрицы
+bool inverse_matrix(double* matrix) {
+    double* common = new double[n * 2 * n];
 
     // Инициализация расширенной матрицы
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            temp[i][j] = matrix[i][j];
+            common[i * 2 * n + j] = std::min(n - j, n - i);
         }
-        temp[i][i + n] = 1.0;
+        for (int j = 0; j < n; ++j) {
+            common[i * 2 * n + j + n] = (i == j) ? 1.0 : 0.0;
+        }
     }
 
     // Прямой ход метода Гаусса
     for (int i = 0; i < n; ++i) {
-        double diag = temp[i][i];
-        if (diag == 0.0) // Матрица необратима
-        {
+        double diag = common[i * 2 * n + i];
+        if (diag == 0.0) {
             std::cerr << "No inverse matrix\n";
+            delete[] common;
+            return false; // Матрица необратима
         }
 
         // Нормализация строки
         for (int j = 0; j < 2 * n; ++j) {
-            temp[i][j] /= diag;
+            common[i * 2 * n + j] /= diag;
         }
 
         // Обнуление столбца
         for (int k = 0; k < n; ++k) {
             if (k == i) continue;
-            double factor = temp[k][i];
+            double factor = common[k * 2 * n + i];
             for (int j = 0; j < 2 * n; ++j) {
-                temp[k][j] -= factor * temp[i][j];
+                common[k * 2 * n + j] -= factor * common[i * 2 * n + j];
             }
         }
     }
@@ -46,24 +46,15 @@ bool inverse_matrix(Matrix &matrix) {
     // Извлечение результата
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            matrix[i][j] = temp[i][j + n];
+            matrix[i * n + j] = common[i * 2 * n + j + n];
         }
     }
+
+    delete[] common;
     return true;
 }
 
-// Функция для создания матрицы
-Matrix create_matrix(int n) {
-    Matrix matrix(n, std::vector<double>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            matrix[i][j] = std::min(n - j, n - i);
-        }
-    }
-    return matrix;
-}
-
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     std::cout.setf(std::ios::fixed);
 
     MPI_Init(&argc, &argv);
@@ -74,17 +65,22 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    int n = std::atoi(argv[1]);
+    n = std::atoi(argv[1]);
 
-    // Создание матрицы
-    Matrix matrix = create_matrix(n);
+    double time = -MPI_Wtime();
 
-    double time = MPI_Wtime();
-    inverse_matrix(matrix);
-    
-    time = MPI_Wtime() - time;
+    double* matrix = new double[n * n];
+
+    if (!inverse_matrix(matrix)) {
+        delete[] matrix;
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+    time += MPI_Wtime();
+
     std::cout << time << "\n";
 
+    delete[] matrix;
     MPI_Finalize();
     return 0;
 }

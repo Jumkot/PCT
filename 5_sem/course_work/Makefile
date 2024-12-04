@@ -12,21 +12,18 @@ clean:
 	rm -f $(TARGETS)
 
 sed_all:
-#sed -i 's/\r//' job/inverse1_4.job
-	sed -i 's/\r//' job/serial1.job
-	sed -i 's/\r//' job/serial3.job
-	sed -i 's/\r//' job/serial5.job
+	sed -i 's/\r//' job/*.job
+	sed -i 's/\r//' job/1000/*.job
+	sed -i 's/\r//' job/2500/*.job
+	sed -i 's/\r//' job/4000/*.job
+
+sbatch_serial:
+	sbatch job/*.job
 
 sbatch_all:
-	sbatch job/inverse1_4.job
-	sbatch job/laplace3_16.job
-	sbatch job/laplace3_32.job
-	sbatch job/laplace4_8.job
-	sbatch job/laplace4_16.job
-	sbatch job/laplace4_32.job
-	sbatch job/serial1.job
-	sbatch job/serial3.job
-	sbatch job/serial5.job
+	sbatch job/1000/*.job
+	sbatch job/2500/*.job
+	sbatch job/4000/*.job
 
 out:
 	g++ -o output output.cpp

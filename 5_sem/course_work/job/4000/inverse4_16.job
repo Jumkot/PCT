@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#SBATCH --nodes=4 --ntasks-per-node=4
+#SBATCH --job-name=J_i4_16
+#SBATCH --output=results/inverse4_16.txt
+
+mpiexec ./inverse 4000
