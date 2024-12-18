@@ -5,11 +5,9 @@
 
 int n;
 
-// Функция для обращения матрицы
 bool inverse_matrix(double* matrix) {
     double* common = new double[n * 2 * n];
 
-    // Инициализация расширенной матрицы
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             common[i * 2 * n + j] = std::min(n - j, n - i);
@@ -18,22 +16,19 @@ bool inverse_matrix(double* matrix) {
             common[i * 2 * n + j + n] = (i == j) ? 1.0 : 0.0;
         }
     }
-
-    // Прямой ход метода Гаусса
+    
     for (int i = 0; i < n; ++i) {
         double diag = common[i * 2 * n + i];
         if (diag == 0.0) {
             std::cerr << "No inverse matrix\n";
             delete[] common;
-            return false; // Матрица необратима
+            return false;
         }
 
-        // Нормализация строки
         for (int j = 0; j < 2 * n; ++j) {
             common[i * 2 * n + j] /= diag;
         }
 
-        // Обнуление столбца
         for (int k = 0; k < n; ++k) {
             if (k == i) continue;
             double factor = common[k * 2 * n + i];
@@ -43,7 +38,6 @@ bool inverse_matrix(double* matrix) {
         }
     }
 
-    // Извлечение результата
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
             matrix[i * n + j] = common[i * 2 * n + j + n];
