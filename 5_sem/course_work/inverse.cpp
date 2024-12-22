@@ -221,14 +221,12 @@ int main(int argc, char** argv)
     );
 
     time += MPI_Wtime();
-    double global_time = 0.0;
 
     if (rank == 0) {
-        MPI_Reduce(&time, &global_time, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
         delete[] full_inverse;
     }
     
-    std::cout << commsize << "    " << global_time << "\n";
+    std::cout << commsize << "    " << time << "\n";
 
     delete[] start;
     delete[] inverse;

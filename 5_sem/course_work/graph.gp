@@ -26,7 +26,7 @@ set format y "%.12g"
 
 set xtics (0, 4, 8, 12, 16, 20, 24, 28, 32)
 
-plot x title "Linear speedup" with lines lc rgb 'blue' lt 1 lw 2,\
+plot x title "Линейное ускорение" with lines lc rgb 'blue' lt 1 lw 2,\
      'results/inverse1.dat' using 1:2 title "n = 1000" with linespoints ls 3,\
      'results/inverse2.dat' using 1:2 title "n = 2500" with linespoints ls 4,\
      'results/inverse4.dat' using 1:2 title "n = 4000" with linespoints ls 5
