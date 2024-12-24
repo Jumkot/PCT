@@ -2,6 +2,6 @@
 
 #SBATCH --nodes=1 --ntasks-per-node=1
 #SBATCH --job-name=J_s1
-#SBATCH --output=results/serial/serial1.txt
+#SBATCH --output=results/serial1.txt
 
 mpiexec ./serial 1000

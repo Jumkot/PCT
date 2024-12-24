@@ -18,9 +18,9 @@ sed_all:
 	sed -i 's/\r//' job/4000/*.job
 
 sbatch_serial:
-	sbatch job/serial/serial1.job
-	sbatch job/serial/serial2.job
-	sbatch job/serial/serial4.job
+	sbatch job/serial1.job
+	sbatch job/serial2.job
+	sbatch job/serial4.job
 
 sbatch_all:
 	sbatch job/1000/inverse1_4.job

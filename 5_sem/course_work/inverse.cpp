@@ -223,7 +223,7 @@ int main(int argc, char** argv)
     time += MPI_Wtime();
     double global_time = 0;
 
-    MPI_Reduce(&t, &global_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&time, &global_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
         delete[] full_inverse;

@@ -40,7 +40,6 @@ void process_files(
         int num_processes;
         double parallel_time;
         while (input_file >> num_processes >> parallel_time) {
-            // Вычисление ускорения
             double speedup = serial_time / parallel_time;
             output_file << num_processes << "\t" << speedup << "\n";
         }
@@ -53,9 +52,9 @@ void process_files(
 
 int main()
 {
-    double serial_time1 = read_serial_time("results/serial/serial1.txt");
-    double serial_time2 = read_serial_time("results/serial/serial2.txt");
-    double serial_time4 = read_serial_time("results/serial/serial4.txt");
+    double serial_time1 = read_serial_time("results/serial1.txt");
+    double serial_time2 = read_serial_time("results/serial2.txt");
+    double serial_time4 = read_serial_time("results/serial4.txt");
 
     if (serial_time1 < 0 || serial_time2 < 0 || serial_time4 < 0) {
         return 1;
